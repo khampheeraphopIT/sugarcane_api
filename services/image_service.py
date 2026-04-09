@@ -55,7 +55,7 @@ class ImageService:
         # --- Load YOLOv8 (leaf detection) independently ---
         try:
             from ultralytics import YOLO
-            self.yolo_model = YOLO("../ml/weights/yolo_sugarcane_leaf.pt")
+            self.yolo_model = YOLO("./ml/weights/yolo_sugarcane_leaf.pt")
             logger.info("YOLOv8 loaded successfully")
         except Exception as e:
             logger.warning(f"YOLOv8 not available ({e}). Will classify full image instead.")
@@ -72,7 +72,7 @@ class ImageService:
                 num_labels=len(DISEASE_CLASSES),
                 ignore_mismatched_sizes=True
             )
-            self.classifier.load_state_dict(torch.load("../ml/weights/sugarcane_finetuned.pth", map_location=torch.device('cpu')))
+            self.classifier.load_state_dict(torch.load("./ml/weights/sugarcane_finetuned.pth", map_location=torch.device('cpu')))
             self.classifier.eval()
             logger.info("Fine-tuned Transformers classifier loaded successfully")
         except Exception as e:

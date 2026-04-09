@@ -53,7 +53,7 @@ class FusionService:
         try:
             import xgboost as xgb
             self.model = xgb.XGBClassifier()
-            self.model.load_model("../ml/weights/fusion_xgb.json")
+            self.model.load_model("./ml/weights/fusion_xgb.json")
             logger.info("XGBoost fusion model loaded")
         except Exception as e:
             logger.warning(f"Fusion model not found ({e}). Using rule-based fallback.")
