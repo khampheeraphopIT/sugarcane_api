@@ -20,10 +20,15 @@ Research value: The model can predict HIGH RISK even when image looks fine,
 if weather conditions are dangerous. This is the key innovation vs Gemini-only.
 """
 import numpy as np
+import os
 from typing import Dict, Any
 import logging
 
 logger = logging.getLogger(__name__)
+
+# Base path for weights
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+WEIGHTS_DIR = os.path.join(BASE_DIR, "ml", "weights")
 
 DISEASE_CLASSES = ["Healthy", "Red_Rot", "Mosaic", "Rust", "Yellow_Leaf", "Blight"]
 
@@ -46,17 +51,19 @@ class FusionService:
     def _load_model(self):
         """
         Load trained XGBoost fusion model.
-
-        Train with: ml/training/train_fusion.py
-        The model learns which COMBINATION of image + weather → actual disease
         """
         try:
             import xgboost as xgb
-            self.model = xgb.XGBClassifier()
-            self.model.load_model("./ml/weights/fusion_xgb.json")
-            logger.info("XGBoost fusion model loaded")
+            model_path = os.path.join(WEIGHTS_DIR, "fusion_xgb.json")
+            if os.path.exists(model_path):
+                self.model = xgb.XGBClassifier()
+                self.model.load_model(model_path)
+                logger.info("XGBoost fusion model loaded")
+            else:
+                logger.warning(f"Fusion model not found at {model_path}. Using fallback.")
+                self.model = None
         except Exception as e:
-            logger.warning(f"Fusion model not found ({e}). Using rule-based fallback.")
+            logger.warning(f"Fusion model error ({e}). Using rule-based fallback.")
             self.model = None
 
     def predict(

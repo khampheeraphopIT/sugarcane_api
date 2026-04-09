@@ -17,12 +17,17 @@ Supported diseases:
   5: Blight (โรคใบไหม้)
 """
 import io
+import os
 import numpy as np
 from PIL import Image
 from typing import Dict, Any, List, Optional
 import logging
 
 logger = logging.getLogger(__name__)
+
+# Base path for weights
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+WEIGHTS_DIR = os.path.join(BASE_DIR, "ml", "weights")
 
 # Disease class mapping
 DISEASE_CLASSES = {
@@ -45,38 +50,38 @@ class ImageService:
     def _load_models(self):
         """
         Load YOLOv8 + EfficientNet models independently.
-
-        To train your own models:
-          YOLOv8: see ml/training/train_yolo.py
-          EfficientNet: see ml/training/train_classifier.py
-
-        For demo/development: falls back to mock predictions.
         """
-        # --- Load YOLOv8 (leaf detection) independently ---
+        # --- Load YOLOv8 (leaf detection) ---
         try:
             from ultralytics import YOLO
-            self.yolo_model = YOLO("./ml/weights/yolo_sugarcane_leaf.pt")
-            logger.info("YOLOv8 loaded successfully")
+            yolo_path = os.path.join(WEIGHTS_DIR, "yolo_sugarcane_leaf.pt")
+            # settings.update({'check_update': False}) # Prevents DNS hanging on Render
+            self.yolo_model = YOLO(yolo_path, task='detect')
+            logger.info("YOLOv8 instance created")
         except Exception as e:
             logger.warning(f"YOLOv8 not available ({e}). Will classify full image instead.")
             self.yolo_model = None
 
-        # --- Load Transformers classifier independently ---
+        # --- Load Transformers classifier ---
         try:
             import torch
             from transformers import AutoModelForImageClassification
             
-            # Create a model structure but load custom weights
+            model_path = os.path.join(WEIGHTS_DIR, "sugarcane_finetuned.pth")
+            
             self.classifier = AutoModelForImageClassification.from_pretrained(
                 "linkanjarad/mobilenet_v2_1.0_224-plant-disease-identification",
                 num_labels=len(DISEASE_CLASSES),
                 ignore_mismatched_sizes=True
             )
-            self.classifier.load_state_dict(torch.load("./ml/weights/sugarcane_finetuned.pth", map_location=torch.device('cpu')))
-            self.classifier.eval()
-            logger.info("Fine-tuned Transformers classifier loaded successfully")
+            if os.path.exists(model_path):
+                self.classifier.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+                self.classifier.eval()
+                logger.info("Fine-tuned Transformers classifier loaded successfully")
+            else:
+                logger.warning(f"Weights not found at {model_path}. Using base model.")
         except Exception as e:
-            logger.warning(f"Fine-tuned classifier not available ({e}). Using mock mode.")
+            logger.warning(f"Fine-tuned classifier error ({e}). Using mock mode.")
             self.classifier = None
 
     async def analyze(self, image_bytes: bytes) -> Dict[str, Any]:
