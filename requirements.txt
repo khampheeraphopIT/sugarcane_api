@@ -1,0 +1,30 @@
+# SugarcaneAI — Python Backend Requirements
+
+# Web framework
+fastapi==0.111.0
+uvicorn[standard]==0.30.0
+python-multipart==0.0.9
+
+# HTTP client (weather API)
+httpx==0.27.0
+
+# Image processing
+Pillow==10.3.0
+numpy==1.26.4
+opencv-python-headless==4.9.0.80
+
+# Deep learning (image pipeline)
+torch==2.3.0
+torchvision==0.18.0
+transformers>=4.40.0
+
+# YOLOv8
+ultralytics==8.2.0
+
+# ML fusion model
+xgboost==2.0.3
+scikit-learn==1.4.2
+
+# Utilities
+python-dotenv==1.0.1
+pydantic==2.7.1
