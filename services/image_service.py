@@ -71,7 +71,7 @@ class ImageService:
             
             self.classifier = AutoModelForImageClassification.from_pretrained(
                 "linkanjarad/mobilenet_v2_1.0_224-plant-disease-identification",
-                num_labels=len(DISEASE_CLASSES),
+                num_labels=6,
                 ignore_mismatched_sizes=True
             )
             if os.path.exists(model_path):
