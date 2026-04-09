@@ -66,7 +66,7 @@ class ReportService:
             return {"is_sugarcane_leaf": True, "description": ""}
 
         b64_image = base64.b64encode(image_bytes).decode("utf-8")
-        prompt = "Is this a picture of a sugarcane leaf or a whole sugarcane plant? If it is something else entirely (like an animal, a face, or a random object), describe what it is in Thai. Reply ONLY in JSON format like this: {\"is_sugarcane_leaf\": true|false, \"description\": \"บอกว่านึ่คือรูปอะไรในภาษาไทย\"}"
+        prompt = "Is this a clear picture of a sugarcane leaf or a sugarcane plant? If the image contains a car, a person, an animal, a computer screen, or any object that is CLEARLY NOT a real sugarcane plant, YOU MUST SET is_sugarcane_leaf to false. Do not guess. Describe what you see in the image in Thai. Reply ONLY in JSON format like this: {\"is_sugarcane_leaf\": true|false, \"description\": \"บอกว่านึ่คือรูปอะไรในภาษาไทย\"}"
         
         payload = {
             "contents": [{
