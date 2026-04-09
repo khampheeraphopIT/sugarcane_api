@@ -76,7 +76,7 @@ class FusionService:
         Combine all signals and produce final prediction.
         """
         # If image was flagged as Out-of-Distribution (Unknown / not a leaf)
-        if image_result["predicted_class"] == -1:
+        if image_result["predicted_class"] == 6:
             return {
                 "final_disease": "Unknown",
                 "final_confidence": 0.0,

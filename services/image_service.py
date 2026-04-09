@@ -37,7 +37,7 @@ DISEASE_CLASSES = {
     3: {"name": "Rust", "thai": "โรคราสนิม", "severity": "medium"},
     4: {"name": "Yellow_Leaf", "thai": "โรคใบเหลือง", "severity": "medium"},
     5: {"name": "Blight", "thai": "โรคใบไหม้", "severity": "medium"},
-    -1: {"name": "Unknown", "thai": "ไม่ระบุ (ไม่ใช่ใบอ้อย/ภาพไม่ชัด)", "severity": "none"}
+    6: {"name": "Unknown", "thai": "ไม่ระบุ (ไม่ใช่ใบอ้อย/ภาพไม่ชัด)", "severity": "none"}
 }
 
 
@@ -159,7 +159,7 @@ class ImageService:
         ENERGY_THRESHOLD = -1.0 
         if avg_energy > ENERGY_THRESHOLD:
             logger.warning(f"OOD detected! Energy score: {avg_energy:.2f}")
-            predicted_class = -1
+            predicted_class = 6
             confidence = 0.0
 
         return self._format_result(predicted_class, confidence, avg_probs, boxes, len(crops))
