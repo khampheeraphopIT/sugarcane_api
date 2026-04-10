@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 # Make sure this is loaded AFTER load_dotenv() so it picks up the .env file if run directly
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent"
+GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
 
 
 

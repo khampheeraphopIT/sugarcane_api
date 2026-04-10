@@ -129,13 +129,25 @@ async def analyze_sugarcane(
             image_result, weather_data, fusion_result, field_meta
         )
 
-        return JSONResponse(content={
+        # Check if the energy-based OOD detector flagged this as non-leaf
+        is_energy_ood = fusion_result.get("final_disease") == "Unknown"
+
+        response_content = {
             "success": True,
             "image_analysis": image_result,
             "weather_features": weather_data,
             "prediction": fusion_result,
             "report": report,
-        })
+        }
+
+        if is_energy_ood:
+            response_content["is_ood"] = True
+            response_content["ood_message"] = fusion_result.get(
+                "warning",
+                "ระบบตรวจไม่พบลักษณะของใบอ้อย หรือภาพไม่ชัดเจน กรุณาถ่ายรูปใบอ้อยให้ชัดเจนอีกครั้ง"
+            )
+
+        return JSONResponse(content=response_content)
 
     except Exception as e:
         logger.error(f"Analysis failed: {e}")
