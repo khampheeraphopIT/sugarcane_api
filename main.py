@@ -92,9 +92,14 @@ async def analyze_sugarcane(
                 "weather_features": {},
                 "prediction": {
                     "final_disease": "Unknown", 
+                    "final_confidence": 0,
                     "risk_score": 0, 
                     "risk_level": "ปลอดภัย",
-                    "forecast_risk_7d": {"level_7d": "ปลอดภัย", "score_7d": 0, "rainy_days_ahead": 0}
+                    "image_agrees": False,
+                    "weather_amplified": False,
+                    "forecast_risk_7d": {"level_7d": "ปลอดภัย", "score_7d": 0, "rainy_days_ahead": 0},
+                    "model": "gemini_ood_gatekeeper",
+                    "warning": "ภาพนี้ไม่ใช่ภาพใบอ้อย"
                 },
                 "report": {
                     "summary": desc,
